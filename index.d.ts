@@ -7,7 +7,7 @@ export interface Config {
   options: ServerOptions,
 }
 
-export function setup(url: string|number|URL, options: Partial<ServerOptions> = {}): Server|undefined;
+export function setup(url: string|number|URL, options: Partial<ServerOptions> = {}): Server|Client;
 export function get(): Server|Client;
 export function started(): boolean;
 export function getConfig(): Config;

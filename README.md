@@ -14,9 +14,9 @@ npm install sveltekit-io
 
 ## Basic setup
 
-Basic example including CORS configuration : adding setup in the file `/src/hooks.ts` :
+Basic example including CORS configuration : adding setup in the file `/src/hooks.js` :
 
-```typescript
+```javascript
 import skio from "sveltekit-io";
 
 skio.setup('http://localhost:3001', {
@@ -33,59 +33,55 @@ This code sets up Socket.io on both server and client sides.
 
 A more advanced usage example : emitting "Hello" messages on new connections and others containing the request URL to all clients on each server request.
 
-In file `/src/hooks.ts` :
+In file `/src/hooks.js` :
 
-```typescript
+```javascript
 import skio from "sveltekit-io";
-import { browser } from "$app/environment";
-import type { Handle } from "@sveltejs/kit";
+import {browser} from "$app/environment";
 
-const io = await skio.setup('http://localhost:3001', {
+skio.setup('http://localhost:3001', {
   cors: {
     origin     : "http://localhost:5173",
     credentials: true,
   },
-});
+}).then(io => {
 
-if ( !browser )
-{
+  if ( browser )
+    return;
+
   io.on('connect', socket => {
 
-    socket.on('message', (message: {}) => {
+    socket.on('message', message => {
       console.log(socket.id, message);
     });
 
     socket.emit('message', {message: 'Hello from server !'});
   });
-}
-
-export const handle: Handle = async ({ event, resolve }) => {
-
-  if ( !browser )
-    io.emit('message', {message: `New request: ${event.request.url}`} );
-
-  return await resolve(event);
-}
+});
 ```
 
 The Svelte hook `onMount()` is a way to ensure we are on the client side, so here for the file `/src/routes/+page.svelte` :
 
 ```html
-<script lang="ts">
+<script>
 
+  import {onMount} from 'svelte';
+  import {browser} from '$app/environment';
   import skio from 'sveltekit-io';
-  import { onMount } from 'svelte';
 
-  onMount(() => {
+  if ( browser ) {
 
-    const socket = skio.get();
+    onMount(() => {
 
-    socket.on('message', (message: {}) => {
-      console.log(message);
+      const socket = skio.get();
+
+      socket.on('message', message => {
+        console.log(message);
+      });
+
+      socket.emit('message', {message: 'Hello from client !'});
     });
-
-    socket.emit('message', {message: 'Hello from client !'});
-  });
+  }
 
 </script>
 ```

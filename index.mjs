@@ -1,6 +1,5 @@
 
 import client from "socket.io-client";
-import {browser, building} from "$app/environment";
 
 let server   = null;
 let instance = null;
@@ -22,8 +21,8 @@ export async function setup(host, options = {}) {
     options: {...options},
   };
 
-  if (building || browser)
-    return;
+  if (typeof window  !== "undefined")
+    return instance = client(config.host.href);
 
   const {createServer} = await import("http");
   const {Server}       = await import("socket.io");
@@ -39,15 +38,6 @@ export async function setup(host, options = {}) {
 }
 
 export function get() {
-
-  if (!instance) {
-
-    if (!browser)
-      throw new Error("Server not started");
-
-    instance = client(config.host.href);
-  }
-
   return instance;
 }
 

@@ -52,12 +52,21 @@ skio.setup('http://localhost:3001', {
   io.on('connect', socket => {
 
     socket.on('message', message => {
-      console.log(socket.id, message);
-    });
 
-    socket.emit('message', {message: 'Hello from server !'});
+      console.log(socket.id, "Client sent:", message);
+
+      socket.emit('message', {message: 'Hello from server !'});
+    });
   });
 });
+
+export const handle = async ({ event, resolve }) => {
+
+  if ( !browser )
+    skio.get()?.emit('message', {message: `New request: ${event.request.url}`} );
+
+  return await resolve(event);
+}
 ```
 
 The Svelte hook `onMount()` is a way to ensure we are on the client side, so here for the file `/src/routes/+page.svelte` :
@@ -66,22 +75,18 @@ The Svelte hook `onMount()` is a way to ensure we are on the client side, so her
 <script>
 
   import {onMount} from 'svelte';
-  import {browser} from '$app/environment';
   import skio from 'sveltekit-io';
 
-  if ( browser ) {
+  onMount(() => {
 
-    onMount(() => {
+    const socket = skio.get();
 
-      const socket = skio.get();
-
-      socket.on('message', message => {
-        console.log(message);
-      });
-
-      socket.emit('message', {message: 'Hello from client !'});
+    socket.on('message', message => {
+      console.log("Server sent:", message);
     });
-  }
+
+    socket.emit('message', {message: 'Hello from client !'});
+  });
 
 </script>
 ```

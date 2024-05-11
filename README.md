@@ -14,7 +14,7 @@ npm install sveltekit-io
 
 ## Basic setup
 
-Basic example including CORS configuration : adding setup in the file `/src/hooks.js` :
+Basic example including CORS configuration : adding setup in the file `/src/hooks.ts` :
 
 ```typescript
 import skio from "sveltekit-io";
@@ -33,7 +33,7 @@ This code sets up Socket.io on both server and client sides.
 
 A more advanced usage example : emitting "Hello" messages on new connections and others containing the request URL to all clients on each server request.
 
-In file `/src/hooks.js` :
+In file `/src/hooks.ts` :
 
 ```typescript
 import skio from "sveltekit-io";
@@ -45,7 +45,7 @@ const io = await skio.setup('http://localhost:3001', {
     origin     : "http://localhost:5173",
     credentials: true,
   },
-})!;
+});
 
 if ( !browser )
 {

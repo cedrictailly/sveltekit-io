@@ -22,7 +22,7 @@ export async function setup(host, options = {}) {
   };
 
   if (typeof window  !== "undefined")
-    return instance = client(config.host.href);
+    return instance = client(config.host.href, config.options);
 
   const {createServer} = await import("http");
   const {Server}       = await import("socket.io");

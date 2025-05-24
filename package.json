@@ -1,6 +1,6 @@
 {
   "name": "sveltekit-io",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "author": "Cédric Tailly",
   "license": "MIT",
   "description": "Creates a Socket.io server at SvelteKit server startup and establishes a connection on the client side.",

@@ -8,7 +8,7 @@ let config   = null;
 export function getConfig() { return config ? {...config} : null; }
 export function started()   { return !!instance; }
 
-export async function setup(host, options = {}) {
+export async function setup(host, options) {
 
   if (started())
     await close();
@@ -30,7 +30,7 @@ export async function setup(host, options = {}) {
   server   = createServer();
   instance = new Server(server, config.options);
 
-  return await new Promise((resolve, reject) => {
+  return await new Promise(resolve => {
     server.listen(config.host.port, config.host.hostname, () => {
       resolve(instance);
     });
